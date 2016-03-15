@@ -3,8 +3,8 @@ var child_process = require('child_process'),
 
 module.exports = function (backstop_path, test_path, cb) {
 
-    child_process.exec('npm install', {cwd: backstop_path}, function (err, stdout, stderr) {
+    child_process.exec('cp -r ./bitmaps_test ./bitmaps_reference ' + backstop_path, {cwd: test_path}, function (err, stdout, stderr) {
         log(err, stdout, stderr);
-        cb(true);
+        cb();
     });
 };

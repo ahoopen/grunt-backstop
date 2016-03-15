@@ -3,7 +3,7 @@ var child_process = require('child_process'),
 
 module.exports = function (backstop_path, test_path, cb) {
 
-    child_process.exec('npm install', {cwd: backstop_path}, function (err, stdout, stderr) {
+    child_process.exec('grunt connect', {cwd: backstop_path}, function (err, stdout, stderr) {
         log(err, stdout, stderr);
         cb(true);
     });
