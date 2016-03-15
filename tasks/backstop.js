@@ -26,7 +26,8 @@ module.exports = function (grunt) {
             setup: false,
             configure: false,
             create_references: false,
-            run_tests: false
+            run_tests: false,
+            open: false
         });
 
         function BackstopShim(data, done) {
@@ -37,7 +38,8 @@ module.exports = function (grunt) {
                 setup: data.setup,
                 configure: data.configure,
                 create_references: data.create_references,
-                run_tests: data.run_tests
+                run_tests: data.run_tests,
+                open: data.open
             };
             this.done = done;
 
@@ -83,6 +85,13 @@ module.exports = function (grunt) {
                 }.bind(this));
             };
 
+            this.open = function (backstop_path, cb) {
+                child_process.exec('grunt connect', {cwd: backstop_path}, function (err, stdout, stderr) {
+                    this.log(err, stdout, stderr);
+                    cb(true);
+                }.bind(this));
+            };
+
         }
 
         var backstop_shim = new BackstopShim(options, done);
@@ -112,6 +121,13 @@ module.exports = function (grunt) {
             function (cb) {
                 if (this.options.run_tests) {
                     this.run_tests(this.backstop_path, this.test_path, function () {
+                        cb();
+                    });
+                } else cb();
+            }.bind(backstop_shim),
+            function (cb) {
+                if (this.options.open) {
+                    this.open(this.backstop_path, this.test_path, function () {
                         cb();
                     });
                 } else cb();
