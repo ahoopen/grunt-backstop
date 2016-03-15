@@ -8,12 +8,6 @@
 
 'use strict';
 
-var configureTask = require('./task.configure'),
-    referenceTask = require('./task.reference'),
-    setupTask = require('./task.setup'),
-    reportTask = require('./task.report'),
-    testTask = require('./task.test');
-
 module.exports = function (grunt) {
 
 
@@ -48,6 +42,56 @@ module.exports = function (grunt) {
                 open: data.open
             };
             this.done = done;
+
+            this.log = function (err, stdout, stderr) {
+                console.log(stdout);
+                console.log(stderr);
+                if (err !== null) {
+                    console.log('ERROR: ' + err);
+                }
+            };
+
+            this.setup = function (backstop_path, test_path, cb) {
+                child_process.exec('cp -r ./bitmaps_test ./bitmaps_reference ' + backstop_path, {cwd: test_path}, function (err, stdout, stderr) {
+                    this.log(err, stdout, stderr);
+                    cb();
+                }.bind(this));
+            };
+
+            this.configure = function (backstop_path, test_path, cb) {
+                child_process.exec('npm install', {cwd: backstop_path}, function (err, stdout, stderr) {
+                    log(err, stdout, stderr);
+                    cb(true);
+                });
+            };
+
+            this.run_tests = function (backstop_path, test_path, cb) {
+                child_process.exec('grunt test', {cwd: backstop_path}, function (err, stdout, stderr) {
+                    this.log(err, stdout, stderr);
+                    child_process.exec('cp -rf ./bitmaps_test ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
+                        this.log(err, stdout, stderr);
+                        cb(true);
+                    }.bind(this));
+                }.bind(this));
+            };
+
+            this.create_references = function (backstop_path, test_path, cb) {
+                child_process.exec('grunt reference', {cwd: backstop_path}, function (err, stdout, stderr) {
+                    this.log(err, stdout, stderr);
+                    child_process.exec('cp -rf ./bitmaps_reference ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
+                        this.log(err, stdout, stderr);
+                        cb(true);
+                    }.bind(this));
+                }.bind(this));
+            };
+
+            this.open = function (backstop_path, cb) {
+                child_process.exec('grunt connect', {cwd: backstop_path}, function (err, stdout, stderr) {
+                    this.log(err, stdout, stderr);
+                    cb(true);
+                }.bind(this));
+            };
+
         }
 
         var backstop_shim = new BackstopShim(options, done);
@@ -55,27 +99,37 @@ module.exports = function (grunt) {
         async.series([
             function (cb) {
                 if (this.options.setup) {
-                    setupTask(this.backstop_path, this.test_path, cb);
+                    this.setup(this.backstop_path, this.test_path, function () {
+                        cb();
+                    });
                 } else cb();
             }.bind(backstop_shim),
             function (cb) {
                 if (this.options.configure) {
-                    configureTask(this.backstop_path, this.test_path, cb);
+                    this.configure(this.backstop_path, this.test_path, function () {
+                        cb();
+                    });
                 } else cb();
             }.bind(backstop_shim),
             function (cb) {
                 if (this.options.create_references) {
-                    referenceTask(this.backstop_path, this.test_path, cb);
+                    this.create_references(this.backstop_path, this.test_path, function () {
+                        cb();
+                    });
                 } else cb();
             }.bind(backstop_shim),
             function (cb) {
                 if (this.options.run_tests) {
-                    testTask(this.backstop_path, this.test_path, cb);
+                    this.run_tests(this.backstop_path, this.test_path, function () {
+                        cb();
+                    });
                 } else cb();
             }.bind(backstop_shim),
             function (cb) {
                 if (this.options.open) {
-                    reportTask(this.backstop_path, this.test_path, cb);
+                    this.open(this.backstop_path, this.test_path, function () {
+                        cb();
+                    });
                 } else cb();
             }.bind(backstop_shim)
         ], function (err, result) {
