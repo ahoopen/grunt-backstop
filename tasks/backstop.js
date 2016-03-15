@@ -8,6 +8,8 @@
 
 'use strict';
 
+var configure = require('./tasks/task.configure');
+
 module.exports = function (grunt) {
 
 
@@ -106,7 +108,7 @@ module.exports = function (grunt) {
             }.bind(backstop_shim),
             function (cb) {
                 if (this.options.configure) {
-                    this.configure(this.backstop_path, this.test_path, function () {
+                    configure(this.backstop_path, this.test_path, function () {
                         cb();
                     });
                 } else cb();
