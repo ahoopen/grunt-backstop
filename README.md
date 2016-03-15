@@ -56,7 +56,7 @@ Type: `String`
 Identifies the location of the BackstopJs module (usually `bower_components` or `node_modules`)
 
 #### target.test_path
-Type: `String`  
+Type: `String`
 
 Identifies the location of the directory that will contain your tests
 
@@ -94,9 +94,3 @@ You may configure your targets to run as many of the available options, and in a
 ## Release Notes
 
 `0.1.3` - provide sane default options
-
-## TODO
-
-* Create a stop command (The server has a 15 minute time out when you run the tests)
-
-* Add tests
