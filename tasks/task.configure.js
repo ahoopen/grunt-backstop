@@ -1,4 +1,4 @@
-var ProcessManager = require('./util/spawn');
+var ProcessManager = require('./../util/spawn');
 
 module.exports = function (backstop_path, test_path, cb) {
     var options = {
