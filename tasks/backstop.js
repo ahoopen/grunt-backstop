@@ -108,9 +108,7 @@ module.exports = function (grunt) {
             }.bind(backstop_shim),
             function (cb) {
                 if (this.options.configure) {
-                    configure(this.backstop_path, this.test_path, function () {
-                        cb();
-                    });
+                    configure(this.backstop_path, cb);
                 } else cb();
             }.bind(backstop_shim),
             function (cb) {
