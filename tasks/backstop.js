@@ -60,9 +60,9 @@ module.exports = function (grunt) {
 
             this.configure = function (backstop_path, test_path, cb) {
                 child_process.exec('npm install', {cwd: backstop_path}, function (err, stdout, stderr) {
-                    log(err, stdout, stderr);
+                    this.log(err, stdout, stderr);
                     cb(true);
-                });
+                }.bind(this));
             };
 
             this.run_tests = function (backstop_path, test_path, cb) {
@@ -76,6 +76,8 @@ module.exports = function (grunt) {
             };
 
             this.create_references = function (backstop_path, test_path, cb) {
+                
+
                 child_process.exec('grunt reference', {cwd: backstop_path}, function (err, stdout, stderr) {
                     this.log(err, stdout, stderr);
                     child_process.exec('cp -rf ./bitmaps_reference ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
