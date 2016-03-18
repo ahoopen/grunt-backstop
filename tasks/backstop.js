@@ -25,7 +25,7 @@ module.exports = function (grunt) {
         var options = this.options({
             backstop_path: './bower_components/backstopjs',
             test_path: './tests',
-            configPath: './backstop.config.json',
+            configPath: 'not set',
             setup: false,
             configure: false,
             create_references: false,
