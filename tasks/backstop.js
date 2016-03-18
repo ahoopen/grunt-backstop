@@ -8,8 +8,6 @@
 
 'use strict';
 
-var configure = require('./task.configure');
-
 module.exports = function (grunt) {
 
 
@@ -60,12 +58,12 @@ module.exports = function (grunt) {
                 }.bind(this));
             };
 
-            //this.configure = function (backstop_path, test_path, cb) {
-            //    child_process.exec('npm install', {cwd: backstop_path}, function (err, stdout, stderr) {
-            //        this.log(err, stdout, stderr);
-            //        cb(true);
-            //    }.bind(this));
-            //};
+            this.configure = function (backstop_path, test_path, cb) {
+               child_process.exec('npm install', {cwd: backstop_path}, function (err, stdout, stderr) {
+                   this.log(err, stdout, stderr);
+                   cb(true);
+               }.bind(this));
+            };
 
             this.run_tests = function (backstop_path, test_path, cb) {
                 child_process.exec('grunt test', {cwd: backstop_path}, function (err, stdout, stderr) {
