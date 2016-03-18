@@ -8,6 +8,8 @@
 
 'use strict';
 
+var fs = require('fs');
+
 module.exports = function (grunt) {
 
 
@@ -23,7 +25,7 @@ module.exports = function (grunt) {
         var options = this.options({
             backstop_path: './bower_components/backstopjs',
             test_path: './tests',
-            configFile: './backstop.config.json',
+            configPath: './backstop.config.json',
             setup: false,
             configure: false,
             create_references: false,
@@ -42,7 +44,7 @@ module.exports = function (grunt) {
                 create_references: data.create_references,
                 run_tests: data.run_tests,
                 open: data.open,
-                configFile: data.configFile
+                configPath: data.configPath
             };
             this.done = done;
 
@@ -69,22 +71,30 @@ module.exports = function (grunt) {
             };
 
             this.run_tests = function (backstop_path, test_path, cb) {
-                child_process.exec('grunt test --configFile=' + this.options.configFile, {cwd: backstop_path}, function (err, stdout, stderr) {
+                var absoluteConfigPath = cwd + '/' + this.options.configPath;
+
+                child_process.exec('npm run test -- --configPath=' + absoluteConfigPath, {cwd: backstop_path}, function (err, stdout, stderr) {
                     this.log(err, stdout, stderr);
-                    child_process.exec('cp -rf ./bitmaps_test ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
-                        this.log(err, stdout, stderr);
-                        cb(true);
-                    }.bind(this));
+                    // child_process.exec('cp -rf ./bitmaps_test ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
+                    //     this.log(err, stdout, stderr);
+                    //     cb(true);
+                    // }.bind(this));
+                    cb(true);
                 }.bind(this));
             };
 
             this.create_references = function (backstop_path, test_path, cb) {
-                child_process.exec('grunt reference --configFile=' + this.options.configFile, {cwd: backstop_path}, function (err, stdout, stderr) {
+                var absoluteConfigPath = cwd + '/' + this.options.configPath;
+
+                console.log(fs.exists(absoluteConfigPath), absoluteConfigPath, backstop_path);
+
+                child_process.exec('npm run reference -- --configPath=' + absoluteConfigPath, {cwd: backstop_path}, function (err, stdout, stderr) {
                     this.log(err, stdout, stderr);
-                    child_process.exec('cp -rf ./bitmaps_reference ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
-                        this.log(err, stdout, stderr);
-                        cb(true);
-                    }.bind(this));
+                    // child_process.exec('cp -rf ./bitmaps_reference ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
+                    //     this.log(err, stdout, stderr);
+                    //     cb(true);
+                    // }.bind(this));
+                    cb(true);
                 }.bind(this));
             };
 
