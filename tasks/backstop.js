@@ -41,7 +41,8 @@ module.exports = function (grunt) {
                 configure: data.configure,
                 create_references: data.create_references,
                 run_tests: data.run_tests,
-                open: data.open
+                open: data.open,
+                configFile: data.configFile
             };
             this.done = done;
 
@@ -68,7 +69,7 @@ module.exports = function (grunt) {
             };
 
             this.run_tests = function (backstop_path, test_path, cb) {
-                child_process.exec('grunt test --configFile=' + this.configFile, {cwd: backstop_path}, function (err, stdout, stderr) {
+                child_process.exec('grunt test --configFile=' + this.options.configFile, {cwd: backstop_path}, function (err, stdout, stderr) {
                     this.log(err, stdout, stderr);
                     child_process.exec('cp -rf ./bitmaps_test ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
                         this.log(err, stdout, stderr);
@@ -78,7 +79,7 @@ module.exports = function (grunt) {
             };
 
             this.create_references = function (backstop_path, test_path, cb) {
-                child_process.exec('grunt reference --configFile=' + this.configFile, {cwd: backstop_path}, function (err, stdout, stderr) {
+                child_process.exec('grunt reference --configFile=' + this.options.configFile, {cwd: backstop_path}, function (err, stdout, stderr) {
                     this.log(err, stdout, stderr);
                     child_process.exec('cp -rf ./bitmaps_reference ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
                         this.log(err, stdout, stderr);
