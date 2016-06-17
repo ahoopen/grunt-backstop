@@ -75,10 +75,10 @@ module.exports = function (grunt) {
 
                 child_process.exec('npm run test -- --configPath=' + absoluteConfigPath, {cwd: backstop_path}, function (err, stdout, stderr) {
                     this.log(err, stdout, stderr);
-                    // child_process.exec('cp -rf ./bitmaps_test ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
-                    //     this.log(err, stdout, stderr);
-                    //     cb(true);
-                    // }.bind(this));
+                    child_process.exec('cp -rf ./bitmaps_test ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
+                        this.log(err, stdout, stderr);
+                        cb(true);
+                    }.bind(this));
                     cb(true);
                 }.bind(this));
             };
@@ -86,25 +86,16 @@ module.exports = function (grunt) {
             this.create_references = function (backstop_path, test_path, cb) {
                 var absoluteConfigPath = cwd + '/' + this.options.configPath;
 
-                console.log(fs.exists(absoluteConfigPath), absoluteConfigPath, backstop_path);
-
                 child_process.exec('npm run reference -- --configPath=' + absoluteConfigPath, {cwd: backstop_path}, function (err, stdout, stderr) {
                     this.log(err, stdout, stderr);
-                    // child_process.exec('cp -rf ./bitmaps_reference ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
-                    //     this.log(err, stdout, stderr);
-                    //     cb(true);
-                    // }.bind(this));
+                    child_process.exec('cp -rf ./bitmaps_reference ' + test_path, {cwd: backstop_path}, function (err, stdout, stderr) {
+                        this.log(err, stdout, stderr);
+                        cb(true);
+                    }.bind(this));
                     cb(true);
                 }.bind(this));
             };
-
-            this.open = function (backstop_path, cb) {
-                child_process.exec('grunt connect', {cwd: backstop_path}, function (err, stdout, stderr) {
-                    this.log(err, stdout, stderr);
-                    cb(true);
-                }.bind(this));
-            };
-
+			
         }
 
         var backstop_shim = new BackstopShim(options, done);
@@ -134,13 +125,6 @@ module.exports = function (grunt) {
             function (cb) {
                 if (this.options.run_tests) {
                     this.run_tests(this.backstop_path, this.test_path, function () {
-                        cb();
-                    });
-                } else cb();
-            }.bind(backstop_shim),
-            function (cb) {
-                if (this.options.open) {
-                    this.open(this.backstop_path, this.test_path, function () {
                         cb();
                     });
                 } else cb();
